@@ -1,6 +1,6 @@
 import os
 import gzip
-for filename in os.listdir("/Users/dcm/Desktop/7069024811/"):
+for filename in os.listdir("pwd"):
     with open(filename) as f:
         if filename.endswith(".gz"):
             f = gzip.GzipFile(filename,"rb")
