@@ -1,0 +1,9 @@
+import os
+import gzip
+for filename in os.listdir("/Users/dcm/Desktop/7069024811/"):
+    with open(filename) as f:
+        if filename.endswith(".gz"):
+            f = gzip.GzipFile(filename,"rb")
+            for line in f:
+		if line.split()[8]=="502":
+            	   print line
