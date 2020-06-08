@@ -1,7 +1,9 @@
+#!/usr/bin/python
 import os
 import sys
 import gzip
 elb_status=sys.argv[1]
+os.chdir(sys.argv[2])
 for filename in os.listdir(sys.argv[2]):
     with open(filename) as f:
         if filename.endswith(".gz"):
