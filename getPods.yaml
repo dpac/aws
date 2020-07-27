@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: hello-pod
+  name: myapp
 spec:
   containers:
-  - name: myApp
+  - name: myapp
     image: dpac1987/myapp:latest
     ports:
     - containerPort: 5000
