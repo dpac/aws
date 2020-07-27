@@ -1,0 +1,10 @@
+piVersion: v1
+kind: Pod
+metadata:
+  name: hello-pod
+spec:
+  containers:
+  - name: myApp
+    image: dpac1987/myapp:latest
+    ports:
+    - containerPort: 5000
