@@ -1,0 +1,118 @@
+Install ubuntu image on virtual box. I am using Ubuntu 18.04.3 LTS
+
+root@ip-10-0-1-165:~/dockerized-lamp# lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 18.04.3 LTS
+Release:	18.04
+Codename:	bionic
+
+Install docker and docker compose
+apt-get install docker docker-compose
+
+Create directory and mount volume to container using below commands
+
+root@ip-10-0-1-165:~# mkdir -p dockerized-lamp/DocumentRoot
+root@ip-10-0-1-165:~# echo "<?php phpinfo(); ?>" > dockerized-lamp/DocumentRoot/index.php
+root@ip-10-0-1-165:~# cd dockerized-lamp/
+root@ip-10-0-1-165:~/dockerized-lamp# ls
+DocumentRoot  docker-compose.yml
+
+File tree
+root@ip-10-0-1-165:~/dockerized-lamp# tree
+.
+├── DocumentRoot
+│   └── index.php
+└── docker-compose.yml
+
+1 directory, 2 files
+root@ip-10-0-1-165:~/dockerized-lamp#
+
+root@ip-10-0-1-165:~/dockerized-lamp# cat docker-compose.yml
+version: '3'
+services:
+    php-apache:
+        image: php:7.2.1-apache
+        ports:
+            - 80:80
+        volumes:
+            - ./DocumentRoot:/var/www/html:z
+        links:
+            - 'mariadb'
+
+    mariadb:
+        image: mariadb:10.1
+        volumes:
+            - mariadb:/var/lib/mysql
+        environment:
+            TZ: "Europe/Rome"
+            MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+            MYSQL_ROOT_PASSWORD: "rootpwd"
+            MYSQL_USER: 'testuser'
+            MYSQL_PASSWORD: 'testpassword'
+            MYSQL_DATABASE: 'testdb'
+
+volumes:
+    mariadb:
+
+-----
+
+logs and build lamp server using docker-compose command
+
+    root@ip-10-0-1-165:~/dockerized-lamp# docker-compose up
+    Creating network "dockerizedlamp_default" with the default driver
+    Creating volume "dockerizedlamp_mariadb" with default driver
+    Pulling mariadb (mariadb:10.1)...
+    10.1: Pulling from library/mariadb
+    7595c8c21622: Pull complete
+    d13af8ca898f: Pull complete
+    70799171ddba: Pull complete
+    b6c12202c5ef: Pull complete
+    16fc46e78d3f: Pull complete
+    dc457e3ddbfb: Pull complete
+    71d4c9358ef7: Pull complete
+    b3a2f04f78c2: Pull complete
+    1d847c507d5f: Pull complete
+    cedbba6fabd0: Pull complete
+    0280a8baf2de: Pull complete
+    0f47c613547a: Pull complete
+    cf5b0d43137f: Pull complete
+    356d8cae76d1: Pull complete
+    Digest: sha256:a29cfe085b62f1653a9f53d075330decce9e1e19fc2b71a155ba41c04598f8e3
+    Status: Downloaded newer image for mariadb:10.1
+    Pulling php-apache (php:7.2.1-apache)...
+    7.2.1-apache: Pulling from library/php
+    e7bb522d92ff: Pull complete
+    75651f247827: Pull complete
+    dbcf8fd0150f: Pull complete
+    de80263f26f0: Pull complete
+    65be8ad4c5fd: Pull complete
+    239d5fed0dda: Pull complete
+    5ab39b683a9f: Pull complete
+    4a3f54f2d93a: Pull complete
+    28c970ad99e9: Pull complete
+    5d1e20c7c396: Pull complete
+    05f877a23903: Pull complete
+    e0a5c61bdaa6: Pull complete
+    d27d2d70a072: Pull complete
+    ba039fef4b7e: Pull complete
+    Digest: sha256:3753d298b1af5b3975518175f29b611edf3b15b27204c917e8283b27df01c619
+    Status: Downloaded newer image for php:7.2.1-apache
+    Creating dockerizedlamp_mariadb_1 ...
+    Creating dockerizedlamp_mariadb_1 ... done
+    Creating dockerizedlamp_php-apache_1 ...
+    Creating dockerizedlamp_php-apache_1 ... done
+    Attaching to dockerizedlamp_mariadb_1, dockerizedlamp_php-apache_1
+
+If everything is fine , you should see Apache/Php installed as below
+
+root@ip-10-0-1-165:~/dockerized-lamp# curl -IX 'GET' localhost
+HTTP/1.1 200 OK
+Date: Sat, 01 Aug 2020 11:01:25 GMT
+Server: Apache/2.4.25 (Debian)
+X-Powered-By: PHP/7.2.1
+Vary: Accept-Encoding
+Transfer-Encoding: chunked
+Content-Type: text/html; charset=UTF-8
+
+https://linuxconfig.org/how-to-create-a-docker-based-lamp-stack-using-docker-compose-on-ubuntu-18-04-bionic-beaver-linux
