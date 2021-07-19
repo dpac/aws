@@ -1,0 +1,1 @@
+for i in `seq 5`; do echo "Sent $i sequence " ; x=0 ;while [[ "$x" -lt 40 ]]; do curl elbDeepDive-1154971917.ap-southeast-2.elb.amazonaws.com -w "\n"; sleep 1 ; x=$[$x+1] ; done ; done
